@@ -1,0 +1,7 @@
+com\roche\partners\poc\core\models\HelloWorldModelTest.class
+com\roche\partners\poc\core\filters\LoggingFilterTest.class
+com\roche\partners\poc\core\schedulers\SimpleScheduledTaskTest.class
+com\roche\partners\poc\core\servlets\SimpleServletTest.class
+com\roche\partners\poc\core\listeners\SimpleResourceListenerTest.class
+com\roche\partners\poc\core\testcontext\AppAemContext$1.class
+com\roche\partners\poc\core\testcontext\AppAemContext.class

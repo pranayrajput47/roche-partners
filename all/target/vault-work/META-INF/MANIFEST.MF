@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: Apache Jackrabbit FileVault - Package Maven Plugin 1.1.6
+Build-Jdk-Spec: 11
+Implementation-Title: Roche Partners - All
+Implementation-Version: 0.0.1-SNAPSHOT
+Content-Package-Type: container
+Content-Package-Id: com.roche.partners:roche-partners.all:0.0.1-SNAPSHOT
+Content-Package-Description: All content package for Roche Partners
+Content-Package-Roots: /apps/roche-partners-packages,/apps/roche-partner
+ s-vendor-packages
+

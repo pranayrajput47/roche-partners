@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Bundle-Category: Roche Partners
+Bundle-Description: Core bundle for Roche Partners
+Bundle-ManifestVersion: 2
+Bundle-Name: Roche Partners - Core
+Bundle-SymbolicName: roche-partners.core
+Bundle-Version: 0.0.1.SNAPSHOT
+Export-Package: com.roche.partners.poc.core.filters;version="1.0";uses
+ :="javax.servlet",com.roche.partners.poc.core.listeners;version="1.0"
+ ;uses:="org.apache.sling.api.resource.observation",com.roche.partners
+ .poc.core.models;version="1.0";uses:="javax.annotation,org.apache.sli
+ ng.api.resource,org.apache.sling.models.annotations,org.apache.sling.
+ models.annotations.injectorspecific",com.roche.partners.poc.core.sche
+ dulers;version="1.0",com.roche.partners.poc.core.servlets;version="1.
+ 0";uses:="javax.servlet,org.apache.sling.api,org.apache.sling.api.ser
+ vlets"
+Import-Package: javax.annotation;version="0.0.0",com.day.cq.wcm.api;ve
+ rsion="[1.27,2)",com.roche.partners.poc.core.filters;version="[1.0,2)
+ ",com.roche.partners.poc.core.listeners;version="[1.0,2)",com.roche.p
+ artners.poc.core.schedulers;version="[1.0,2)",com.roche.partners.poc.
+ core.servlets;version="[1.0,2)",javax.servlet;version="[3.1,4)",org.a
+ pache.sling.api;version="[2.3,3)",org.apache.sling.api.request;versio
+ n="[2.4,3)",org.apache.sling.api.resource;version="[2.11,3)",org.apac
+ he.sling.api.resource.observation;version="[1.2,2)",org.apache.sling.
+ api.servlets;version="[2.3,3)",org.apache.sling.models.annotations;ve
+ rsion="[1.5,2)",org.apache.sling.models.annotations.injectorspecific;
+ version="[1.1,2)",org.slf4j;version="[1.7,2)"
+Provide-Capability: osgi.service;objectClass:List<String>="java.lang.R
+ unnable",osgi.service;objectClass:List<String>="javax.servlet.Filter"
+ ;uses:="javax.servlet",osgi.service;objectClass:List<String>="javax.s
+ ervlet.Servlet";uses:="javax.servlet",osgi.service;objectClass:List<S
+ tring>="org.apache.sling.api.resource.observation.ResourceChangeListe
+ ner";uses:="org.apache.sling.api.resource.observation"
+Require-Capability: osgi.extender;filter:="(&(osgi.extender=osgi.compo
+ nent)(version>=1.4.0)(!(version>=2.0.0)))",osgi.ee;filter:="(&(osgi.e
+ e=JavaSE)(version=1.8))"
+Service-Component: OSGI-INF/com.roche.partners.poc.core.filters.Loggin
+ gFilter.xml,OSGI-INF/com.roche.partners.poc.core.listeners.SimpleReso
+ urceListener.xml,OSGI-INF/com.roche.partners.poc.core.schedulers.Simp
+ leScheduledTask.xml,OSGI-INF/com.roche.partners.poc.core.servlets.Sim
+ pleServlet.xml
+Sling-Model-Classes: com.roche.partners.poc.core.models.HelloWorldMode
+ l
+

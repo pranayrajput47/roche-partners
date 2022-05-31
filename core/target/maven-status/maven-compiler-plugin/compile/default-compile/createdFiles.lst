@@ -1,0 +1,11 @@
+com\roche\partners\poc\core\models\package-info.class
+com\roche\partners\poc\core\filters\package-info.class
+com\roche\partners\poc\core\models\HelloWorldModel.class
+com\roche\partners\poc\core\filters\LoggingFilter.class
+com\roche\partners\poc\core\schedulers\SimpleScheduledTask$Config.class
+com\roche\partners\poc\core\schedulers\package-info.class
+com\roche\partners\poc\core\listeners\package-info.class
+com\roche\partners\poc\core\servlets\package-info.class
+com\roche\partners\poc\core\listeners\SimpleResourceListener.class
+com\roche\partners\poc\core\servlets\SimpleServlet.class
+com\roche\partners\poc\core\schedulers\SimpleScheduledTask.class

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Roche Partners - All</comment>
+<entry key="allowIndexDefinitions">false</entry>
+<entry key="created">2022-05-27T13:58:40.663Z</entry>
+<entry key="groupId">com.roche.partners</entry>
+<entry key="name">roche-partners.all</entry>
+<entry key="description">All content package for Roche Partners</entry>
+<entry key="artifactId">roche-partners.all</entry>
+<entry key="version">0.0.1-SNAPSHOT</entry>
+<entry key="packageType">container</entry>
+<entry key="requiresRoot">false</entry>
+<entry key="group">com.roche.partners</entry>
+</properties>

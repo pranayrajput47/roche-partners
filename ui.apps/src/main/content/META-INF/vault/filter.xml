@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/roche-partners/clientlibs"/>
+    <filter root="/apps/roche-partners/components"/>
+    <filter root="/apps/roche-partners/i18n"/>
+</workspaceFilter>

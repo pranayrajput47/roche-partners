@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Created-By: Apache Jackrabbit FileVault - Package Maven Plugin 1.1.6
+Build-Jdk-Spec: 11
+Implementation-Title: Roche Partners - UI content
+Implementation-Version: 0.0.1-SNAPSHOT
+Content-Package-Type: content
+Content-Package-Id: com.roche.partners:roche-partners.ui.content:0.0.1-S
+ NAPSHOT
+Content-Package-Description: UI content package for Roche Partners
+Content-Package-Dependencies: com.roche.partners:roche-partners.ui.apps:
+ 0.0.1-SNAPSHOT
+Content-Package-Dependencies-Locations: com.roche.partners:roche-partner
+ s.ui.apps:0.0.1-SNAPSHOT=maven:com.roche.partners:roche-partners.ui.app
+ s:0.0.1-SNAPSHOT:zip
+Content-Package-Roots: /conf/roche-partners,/content/dam/roche-partners/
+ asset.jpg,/content/experience-fragments/roche-partners,/content/roche-p
+ artners
+

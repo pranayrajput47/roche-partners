@@ -1,0 +1,4 @@
+com\roche\partners\poc\it\tests\HtmlUnitClient.class
+com\roche\partners\poc\it\tests\GetPageIT.class
+com\roche\partners\poc\it\tests\CreatePageIT.class
+com\roche\partners\poc\it\tests\PublishPageValidationIT.class

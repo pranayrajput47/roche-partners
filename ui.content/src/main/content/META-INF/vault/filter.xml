@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/conf/roche-partners" mode="merge"/>
+    <filter root="/content/roche-partners" mode="merge"/>
+    <filter root="/content/dam/roche-partners/asset.jpg" mode="merge"/>
+    <filter root="/content/experience-fragments/roche-partners" mode="merge"/>
+</workspaceFilter>

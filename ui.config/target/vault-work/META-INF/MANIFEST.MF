@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: Apache Jackrabbit FileVault - Package Maven Plugin 1.1.6
+Build-Jdk-Spec: 11
+Implementation-Title: Roche Partners - UI config
+Implementation-Version: 0.0.1-SNAPSHOT
+Content-Package-Type: container
+Content-Package-Id: com.roche.partners:roche-partners.ui.config:0.0.1-SN
+ APSHOT
+Content-Package-Description: UI config package for Roche Partners
+Content-Package-Roots: /apps/roche-partners/osgiconfig
+
