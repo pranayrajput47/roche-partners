@@ -1,0 +1,10 @@
+<sly data-sly-use.model="com.roche.partners.poc.core.models.StagesModel">
+    <div class="card">
+        <sly data-sly-list.item="${model.rocheList}">
+            <h4> <a href="${item.link}">${item.link} </a></h4>
+            <p>${item.description @context='html'}</p>
+            <img src="${item.image}" alt="image" style="width:15%">
+            <div class="container">
+            </div>
+    </div>
+</sly>
