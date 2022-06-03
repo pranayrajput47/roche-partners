@@ -17,4 +17,5 @@ package com.roche.partners.poc.core.services;
 
 public interface S3BucketPushService  {
 
+    void pushContentToS3(String html);
 }

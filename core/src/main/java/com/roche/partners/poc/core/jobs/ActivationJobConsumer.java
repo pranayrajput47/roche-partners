@@ -2,6 +2,7 @@ package com.roche.partners.poc.core.jobs;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.wcm.api.Page;
+import com.roche.partners.poc.core.services.HTMLParserService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.sling.api.resource.Resource;
@@ -14,6 +15,9 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ActivationJobConsumer
@@ -28,6 +32,9 @@ public class ActivationJobConsumer implements JobConsumer {
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
+    @Reference
+    private HTMLParserService htmlParserService;
+
     @Activate
     protected void activate() {
         log.info("Activated ActivationJobConsumer");
@@ -36,7 +43,9 @@ public class ActivationJobConsumer implements JobConsumer {
     @Override
     public JobResult process(Job job) {
         boolean status = false;
-        try (ResourceResolver resourceResolver = null) {
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put(ResourceResolverFactory.SUBSERVICE, "replicationService");
+        try (ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(paramMap)) {
             ReplicationAction action = (ReplicationAction) job.getProperty("resourcePath");
             log.info("ActivationJobConsumer : process() : The path in which the replication is triggered and passed to the Job is " +
                     "{}", action.getPath());
@@ -44,6 +53,7 @@ public class ActivationJobConsumer implements JobConsumer {
             if (activatedPageResource instanceof Resource) {
                 Page activatedPage = activatedPageResource.adaptTo(Page.class);
                 if (activatedPage != null) {
+                    htmlParserService.fetchHTMLDocument(resourceResolver, action.getPath());
                 }
             }
             log.info("JobConsumer Status : {}", status);
