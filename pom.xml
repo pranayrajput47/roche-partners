@@ -34,8 +34,8 @@
         <module>ui.apps.structure</module>
         <module>ui.config</module>
         <module>ui.content</module>
-        <module>it.tests</module>
-        <module>ui.tests</module>
+<!--        <module>it.tests</module>-->
+<!--        <module>ui.tests</module>-->
     </modules>
 
     <properties>
@@ -721,8 +721,11 @@ Bundle-DocURL:
                 <type>zip</type>
                 <version>${core.wcm.components.version}</version>
             </dependency>
-
-
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>1.11.24</version>
+            </dependency>
             <!-- Testing -->
             <dependency>
                 <groupId>org.junit</groupId>
@@ -784,12 +787,6 @@ Bundle-DocURL:
                 <scope>provided</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>s3</artifactId>
-                <version>2.15.32</version>
-                <scope>import</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
