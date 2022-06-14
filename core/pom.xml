@@ -43,7 +43,9 @@
                         </goals>
                         <configuration>
                             <bnd><![CDATA[
-Import-Package: javax.annotation;version=0.0.0,*
+Import-Package: \
+com.amazonaws.*;resolution:=optional,\
+*
                                 ]]></bnd>
                         </configuration>
                     </execution>
@@ -219,6 +221,7 @@ Import-Package: javax.annotation;version=0.0.0,*
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

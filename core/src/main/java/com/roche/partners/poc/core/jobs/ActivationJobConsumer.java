@@ -1,6 +1,8 @@
 package com.roche.partners.poc.core.jobs;
 
 import com.day.cq.replication.ReplicationAction;
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.roche.partners.poc.core.services.HTMLParserService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.framework.Constants;
@@ -16,7 +19,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,10 +55,22 @@ public class ActivationJobConsumer implements JobConsumer {
             log.info("ActivationJobConsumer : process() : The path in which the replication is triggered and passed to the Job is " +
                     "{}", action.getPath());
             Resource activatedPageResource = resourceResolver.getResource(action.getPath());
+            Resource jcrResource = activatedPageResource.getChild("jcr:content");
             if (activatedPageResource instanceof Resource) {
                 Page activatedPage = activatedPageResource.adaptTo(Page.class);
+                ValueMap pageProperties = activatedPage.getProperties();
+                String[] tags = pageProperties.get("cq:tags", String[].class);
+                final TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
+                final List<String> tagNames = new ArrayList<String>();
+                for (Tag tag : tagManager.getTags(jcrResource)) {
+                    log.info("Name :: {}, Title :: {}",tag.getName(), tag.getTitle());
+                    tagNames.add(tag.getName());
+                }
+
+                log.info("tagNames :: {}", tagNames);
+                String pageName = activatedPage.getName();
                 if (activatedPage != null) {
-                    htmlParserService.fetchHTMLDocument(resourceResolver, action.getPath());
+                    htmlParserService.fetchHTMLDocument(resourceResolver, action.getPath(), pageName, tagNames);
                 }
             }
             log.info("JobConsumer Status : {}", status);
