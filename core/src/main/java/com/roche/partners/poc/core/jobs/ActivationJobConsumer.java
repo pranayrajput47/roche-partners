@@ -56,6 +56,11 @@ public class ActivationJobConsumer implements JobConsumer {
                     "{}", action.getPath());
             Resource activatedPageResource = resourceResolver.getResource(action.getPath());
             Resource jcrResource = activatedPageResource.getChild("jcr:content");
+            Resource parentResource = activatedPageResource.getParent();
+            String parentPath= "";
+            if (parentResource instanceof Resource) {
+                 parentPath = parentResource.getPath();
+            }
             if (activatedPageResource instanceof Resource) {
                 Page activatedPage = activatedPageResource.adaptTo(Page.class);
                 ValueMap pageProperties = activatedPage.getProperties();
@@ -71,6 +76,9 @@ public class ActivationJobConsumer implements JobConsumer {
                 String pageName = activatedPage.getName();
                 if (activatedPage != null) {
                     htmlParserService.fetchHTMLDocument(resourceResolver, action.getPath(), pageName, tagNames);
+                }
+                if (parentPath != null) {
+                    htmlParserService.fetchHTMLDocument(resourceResolver, "/content/roche-partners/naviagtion", "navigation", tagNames);
                 }
             }
             log.info("JobConsumer Status : {}", status);

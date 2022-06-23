@@ -15,7 +15,11 @@
  */
 package com.roche.partners.poc.core.services;
 
+import java.io.File;
+
 public interface S3BucketPushService  {
 
-    void pushContentToS3(String html);
+    void pushContentToS3(String bucketName, String filePath, String fileS3Path);
+
+    void createBucket(String bucketName);
 }

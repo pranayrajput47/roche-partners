@@ -4,6 +4,11 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.policy.Policy;
+import com.amazonaws.auth.policy.Principal;
+import com.amazonaws.auth.policy.Resource;
+import com.amazonaws.auth.policy.Statement;
+import com.amazonaws.auth.policy.actions.S3Actions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -13,6 +18,8 @@ import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+
+import java.io.File;
 
 
 @Component(immediate = true, service = S3BucketPushService.class, property = {
@@ -31,11 +38,40 @@ public class S3BucketPushServiceImpl implements S3BucketPushService {
     }
 
     @Override
-    public void pushContentToS3(String bucketName) {
-        String fileName = "article1";
+    public void pushContentToS3(String bucketName, String filePath, String fileS3Path) {
         try {
-            log.info("Inside Push Content to s3");
 
+            log.info("Inside Push Content to s3");
+            AWSCredentials credentials = new BasicAWSCredentials(
+                    "AKIA6E6SUNG5Q6YFTP7V",
+                    "S/2qdKP+NI+yIkrJ7Bi+3V1bOyw7v+vdOiljt60z"
+            );
+            AmazonS3 client =
+                    AmazonS3ClientBuilder.standard()
+                            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                            .withRegion("ap-south-1") // The first region to try your request against
+                            .build();
+
+            log.info("client :: {}",client );
+
+            client.putObject(
+                    bucketName,
+                    fileS3Path,
+                    new File(filePath));
+
+
+        } catch (AmazonS3Exception e) {
+            log.error("Excepion in Amazon S3 Bucket :: " + e.getMessage());
+        } catch (AmazonClientException e) {
+            log.error("Excepion in Amazon Client :: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Excepion in pushContentToS3 method of S3BucketPushServiceImpl :: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void createBucket(String bucketName) {
+        try {
             AWSCredentials credentials = new BasicAWSCredentials(
                     "AKIA6E6SUNG5Q6YFTP7V",
                     "S/2qdKP+NI+yIkrJ7Bi+3V1bOyw7v+vdOiljt60z"
@@ -54,6 +90,26 @@ public class S3BucketPushServiceImpl implements S3BucketPushService {
                 return;
             }
             client.createBucket(bucketName);
+//            Policy bucket_policy = new Policy().withStatements(
+//                    new Statement(Statement.Effect.Allow)
+//                            .withPrincipals(Principal.AllUsers)
+//                            .withActions(S3Actions.GetObject)
+//                            .withResources(new Resource(
+//                                    "arn:aws:s3:::" + bucketName + "/*")));
+            client.setBucketPolicy(bucketName,"{\n" +
+                    "    \"Version\": \"2012-10-17\",\n" +
+                    "    \"Id\": \"123\",\n" +
+                    "    \"Statement\": [\n" +
+                    "        {\n" +
+                    "            \"Sid\": \"\",\n" +
+                    "            \"Effect\": \"Allow\",\n" +
+                    "            \"Principal\": \"*\",\n" +
+                    "            \"Action\": \"s3:GetObject\",\n" +
+                    "            \"Resource\": \"arn:aws:s3:::partner-kaiku/*\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}"
+            );
 
         } catch (AmazonS3Exception e) {
             log.error("Excepion in Amazon S3 Bucket :: " + e.getMessage());
@@ -63,5 +119,30 @@ public class S3BucketPushServiceImpl implements S3BucketPushService {
             log.error("Excepion in pushContentToS3 method of S3BucketPushServiceImpl :: " + e.getMessage());
         }
     }
+
+//    private AmazonS3 buildS3Client() {
+//        AmazonS3 client = AmazonS3ClientBuilder.defaultClient();
+//        try {
+//            AWSCredentials credentials = new BasicAWSCredentials(
+//                    "AKIA6E6SUNG5Q6YFTP7V",
+//                    "S/2qdKP+NI+yIkrJ7Bi+3V1bOyw7v+vdOiljt60z"
+//            );
+//             client =
+//                    AmazonS3ClientBuilder.standard()
+//                            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+//                            .withRegion("ap-south-1") // The first region to try your request against
+//                            .build();
+//
+//            log.info("client :: {}",client );
+//
+//            return client;
+//
+//        } catch (AmazonClientException e) {
+//            log.error("Excepion in Amazon Client :: " + e.getMessage());
+//        } catch (Exception e) {
+//            log.error("Excepion in generateS3CLient method of S3BucketPushServiceImpl :: " + e.getMessage());
+//        }
+//        return client;
+//    }
 
 }
