@@ -4,7 +4,7 @@ import com.day.cq.replication.ReplicationAction;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
-import com.roche.partners.poc.core.services.HTMLParserService;
+import com.roche.partners.poc.core.services.DocumentParserService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.sling.api.resource.Resource;
@@ -19,10 +19,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ActivationJobConsumer
@@ -38,7 +35,7 @@ public class ActivationJobConsumer implements JobConsumer {
     private ResourceResolverFactory resourceResolverFactory;
 
     @Reference
-    private HTMLParserService htmlParserService;
+    private DocumentParserService documentParserService;
 
     @Activate
     protected void activate() {
@@ -54,8 +51,17 @@ public class ActivationJobConsumer implements JobConsumer {
             ReplicationAction action = (ReplicationAction) job.getProperty("resourcePath");
             log.info("ActivationJobConsumer : process() : The path in which the replication is triggered and passed to the Job is " +
                     "{}", action.getPath());
+
             Resource activatedPageResource = resourceResolver.getResource(action.getPath());
             Resource jcrResource = activatedPageResource.getChild("jcr:content");
+
+            Resource componentResource = resourceResolver.getResource(action.getPath()+"/jcr:content/root/container/container");
+
+            Iterator<Resource> components = null;
+            if (activatedPageResource != null) {
+                components = componentResource.listChildren();
+            }
+
             Resource parentResource = activatedPageResource.getParent();
             String parentPath= "";
             if (parentResource instanceof Resource) {
@@ -75,10 +81,10 @@ public class ActivationJobConsumer implements JobConsumer {
                 log.info("tagNames :: {}", tagNames);
                 String pageName = activatedPage.getName();
                 if (activatedPage != null) {
-                    htmlParserService.fetchHTMLDocument(resourceResolver, action.getPath(), pageName, tagNames);
+                    documentParserService.fetchHTMLDocument(resourceResolver, action.getPath(), pageName, tagNames, components);
                 }
                 if (parentPath != null) {
-                    htmlParserService.fetchHTMLDocument(resourceResolver, "/content/roche-partners/naviagtion", "navigation", tagNames);
+                    documentParserService.fetchHTMLDocument(resourceResolver, "/content/roche-partners/naviagtion", "navigation", tagNames, components);
                 }
             }
             log.info("JobConsumer Status : {}", status);
