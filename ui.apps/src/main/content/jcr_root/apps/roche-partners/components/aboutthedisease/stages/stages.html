@@ -1,0 +1,39 @@
+<p data-sly-test.edit="${wcmmode.edit}" data-emptytext="Configure Stages Component here" class="cq-placeholder"></p>
+<sly data-sly-use.model="com.roche.partners.poc.core.models.StagesModel">
+<section class="section-stages">
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html">
+    <sly data-sly-call="${clientlib.css @ categories='roche-partners.stages'}" />
+    <h2 class="heading--two">${properties.heading}</h2>
+
+    <div class="stages--desc">
+        ${properties.description @ context= 'html'}
+    </div>
+
+    <div class="stages--grid" data-sly-repeat="${model.rocheList}">
+    <sly data-sly-test="${item.viewType == 'left'}">
+        <div class="grid-lh">
+            <img src="${item.image}" alt="${item.imageAltText}" title="" />
+        </div>
+        <div class="grid-rh">
+            ${item.description @ context= 'html'}
+
+            <div class="stages--list" data-sly-repeat.summary="${item.subStagesList}">
+                ${summary @ context= 'html'}
+            </div>
+        </div>
+        </sly>
+        <sly data-sly-test="${item.viewType == 'right'}">
+        <div class="grid-rh">
+            <img src="${item.image}" alt="${item.imageAltText}" title="" />
+        </div>
+        <div class="grid-lh">
+            ${item.description @ context= 'html'}
+
+            <div class="stages--list" data-sly-repeat.summary="${item.subStagesList}">
+                ${summary @ context= 'html'}
+            </div>
+        </div>
+        </sly>
+    </div>
+</section>
+</sly>

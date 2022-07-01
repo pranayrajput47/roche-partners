@@ -1,0 +1,11 @@
+<p data-sly-test.edit="${wcmmode.edit}" data-emptytext="Configure Notification Component here" class="cq-placeholder"></p>
+
+<section class="section-sec-footer">
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html">
+    <sly data-sly-call="${clientlib.css @ categories='roche-partners.notification'}"/>
+</sly>
+        <div class="footer--box__blue">
+            <img class="nurse-img" src="${properties.image}" alt="Nurse">
+            <p>${properties.description @context='html'} </p>
+        </div>
+    </section>

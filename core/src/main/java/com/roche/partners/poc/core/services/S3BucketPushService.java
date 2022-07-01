@@ -22,4 +22,6 @@ public interface S3BucketPushService  {
     void pushContentToS3(String bucketName, String filePath, String fileS3Path);
 
     void createBucket(String bucketName);
+
+    String getRegion();
 }

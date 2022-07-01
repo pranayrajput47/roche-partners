@@ -36,6 +36,7 @@ public class StagesModel {
                 String description =  valueMap.get("description", StringUtils.EMPTY);
                 String image=   valueMap.get("image", StringUtils.EMPTY);
                 String imageAltText =  valueMap.get("imageAltText", StringUtils.EMPTY);
+                String viewType =  valueMap.get("viewType", StringUtils.EMPTY);
 
                 List<String> subStagesList = new ArrayList<>();
 
@@ -50,7 +51,7 @@ public class StagesModel {
                     });
                 }
 
-                Roche roche = new Roche(description,image,imageAltText, subStagesList);
+                Roche roche = new Roche(description,image,imageAltText, subStagesList, viewType);
 
                 rocheList.add(roche);
             });

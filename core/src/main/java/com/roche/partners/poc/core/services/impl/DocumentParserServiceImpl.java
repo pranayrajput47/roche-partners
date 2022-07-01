@@ -1,4 +1,5 @@
 package com.roche.partners.poc.core.services.impl;
+import com.day.cq.commons.Externalizer;
 import com.day.cq.contentsync.handler.util.RequestResponseFactory;
 import com.day.cq.wcm.api.WCMMode;
 import com.roche.partners.poc.core.constants.RocheConstants;
@@ -13,8 +14,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.engine.SlingRequestProcessor;
-import org.apache.sling.models.factory.ModelFactory;
-import org.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -51,13 +52,14 @@ public class DocumentParserServiceImpl implements DocumentParserService {
     private S3BucketPushService s3BucketPushService;
 
     @Reference
-    ModelFactory modelFactory;
+    Externalizer externalizer;
 
+    private String s3BucketHostAddress = "";
+
+    private String publishHost = "";
 
     @Activate
-    protected final void activate() {
-        log.info("Activated DocumentParserServiceImpl");
-    }
+    protected final void activate() {log.info("Activated DocumentParserServiceImpl");}
 
     @Deactivate
     protected void deactivate() {
@@ -68,14 +70,39 @@ public class DocumentParserServiceImpl implements DocumentParserService {
     public void fetchHTMLDocument(ResourceResolver resourceResolver, String activatedPage, String pageName,
                                   List<String> tagNames, Iterator<Resource> components) throws ServletException, IOException {
         try {
-            log.info("Inside HtmlParser :: {}",activatedPage);
+            externalizer = resourceResolver.adaptTo(Externalizer.class);
+            publishHost= externalizer.publishLink(resourceResolver, "");
+            log.info("Inside HtmlParser :: {}", activatedPage);
 
-            String htmlString = sendRequest(resourceResolver,activatedPage+"."+ RocheConstants.HTML);
-            String jsonString= fetchJson(activatedPage);
+            String htmlString = sendRequest(resourceResolver, activatedPage + "." + RocheConstants.HTML);
+            String jsonString = "";
+            if (pageName.equalsIgnoreCase(RocheConstants.Navigation)) {
+                jsonString = fetchJson(activatedPage, pageName);
+                JSONObject obj = new JSONObject(jsonString);
+                String itemsList = obj.get("items").toString();
+                JSONArray jsonArray = new JSONArray(itemsList);
+                log.debug("jsonArray :: {}", jsonArray);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject itemArr = (JSONObject) jsonArray.get(i);
+                    String path = itemArr.get("path").toString();
+
+                    String updatedUrl = path.replace("/content/roche-partners", s3BucketHostAddress);
+                    int index = updatedUrl.lastIndexOf("/");
+                    String indexName = updatedUrl.substring(index, updatedUrl.length());
+                    updatedUrl = updatedUrl + "/view" + indexName + ".html";
+                    itemArr.put("url", updatedUrl);
+                    jsonArray.put(i, itemArr);
+                }
+                obj.put("items", jsonArray);
+                jsonString = obj.toString();
+            } else
+                jsonString = fetchJson(activatedPage, pageName);
+
 
             for (String partnerName : tagNames) {
-            Document document = Jsoup.parse(htmlString, "UTF-8");
-            Elements sectionElements = document.getElementsByTag("section");
+                s3BucketHostAddress = "https://" + partnerName + ".s3." + s3BucketPushService.getRegion() + ".amazonaws.com";
+                Document document = Jsoup.parse(htmlString, "UTF-8");
+                Elements sectionElements = document.getElementsByTag("section");
 
                 s3BucketPushService.createBucket(partnerName);
 
@@ -83,12 +110,12 @@ public class DocumentParserServiceImpl implements DocumentParserService {
                 for (Element src : sectionElements.select("[src]")) {
                     if (src.normalName().equals("img")) {
                         String absUrl = "http://15.207.109.174:4503" + src.attr("src");
-                        path = src.attr("src").replaceAll("/content/dam/roche-partners", "https://"+partnerName+".s3.ap-south-1.amazonaws.com/assets/images");
+                        path = src.attr("src").replace("/content/dam/roche-partners", s3BucketHostAddress + "/assets/images");
                         src.attr("src", path);
                         getFiles(absUrl, tagNames);
                     } else if (src.normalName().equals("script")) {
                         String jsString = sendRequest(resourceResolver, src.attr("src"));
-                        path = src.attr("src").replaceAll("/etc.clientlibs/roche-partners/clientlibs", "https://"+partnerName+".s3.ap-south-1.amazonaws.com/assets/js");
+                        path = src.attr("src").replace("/etc.clientlibs/roche-partners/clientlibs", s3BucketHostAddress + "/assets/js");
                         src.attr("src", path);
 
                         updateFile(jsString, path, "js", partnerName);
@@ -98,21 +125,16 @@ public class DocumentParserServiceImpl implements DocumentParserService {
                 for (Element src : sectionElements.select("[href]")) {
                     if (src.normalName().equals("link")) {
                         String cssString = sendRequest(resourceResolver, src.attr(RocheConstants.HREF));
-                        path = src.attr(RocheConstants.HREF).replaceAll("/etc.clientlibs/roche-partners/clientlibs", "https://"+partnerName+".s3.ap-south-1.amazonaws.com/assets/css");
+                        path = src.attr(RocheConstants.HREF).replace("/etc.clientlibs/roche-partners/clientlibs", s3BucketHostAddress + "/assets/css");
                         src.attr(RocheConstants.HREF, path);
-
                         updateFile(cssString, path, RocheConstants.CSS, partnerName);
-
-                    } else if (src.normalName().equals("div")) {
-                        if (pageName == "navigation") {
-                            path = src.attr(RocheConstants.HREF).replaceAll("/content/roche-partners/us/en/nsclc/", "https://"+partnerName+".s3.ap-south-1.amazonaws.com/us/en/nsclc/about-the-disease/view/");
+                    } else if (src.normalName().equals("div") || src.normalName().equals("a")) {
+                            path = src.attr(RocheConstants.HREF).replace("/content/roche-partners", s3BucketHostAddress);
                             src.attr(RocheConstants.HREF, path);
-                        }
                     }
-
                 }
-                path=activatedPage.replaceAll("/content/roche-partners/","");
-                if(pageName!= "navigation") {
+                path = activatedPage.replace("/content/roche-partners/", "");
+                if (pageName != RocheConstants.Navigation) {
                     int count = 0;
                     for (Element src : sectionElements) {
                         updateFile(src.toString(), path + "/components/component-" + count, RocheConstants.HTML, partnerName);
@@ -122,7 +144,7 @@ public class DocumentParserServiceImpl implements DocumentParserService {
                     while(components.hasNext()) {
                         String componentJsonString= "";
                         log.info("children :: {}", components.next().getPath());
-                        componentJsonString= fetchJson(components.next().getPath());
+                        componentJsonString= fetchJson(components.next().getPath(),"");
                         updateFile(componentJsonString, path + "/components/component-" + count, RocheConstants.JSON, partnerName);
                         count++;
                     }
@@ -132,54 +154,49 @@ public class DocumentParserServiceImpl implements DocumentParserService {
                 updateFile(jsonString, path, RocheConstants.JSON, partnerName);
             }
         } catch (Exception e) {
-            log.error("Excepion in fetchHTMLDocument method of DocumentParserServiceImpl :: " + e);
+            log.error("Exception in fetchHTMLDocument method of DocumentParserServiceImpl :: " + e);
         }
     }
 
-    private void updateFile(String section, String path, String fileType, String partnerName) {
+    private void updateFile(String section, String path, String fileType, String partnerName) throws IOException {
         File file;
-        String resourcePath= "";
-        String fileName= "";
-        if(fileType != RocheConstants.CSS && fileType != RocheConstants.JS)
-            resourcePath= path+"."+fileType;
+        String resourcePath = "";
+        String fileName = "";
+        if (!fileType.equalsIgnoreCase(RocheConstants.CSS) && !fileType.equalsIgnoreCase(RocheConstants.JS))
+            resourcePath = path + "." + fileType;
         else
-            resourcePath= path;
+            resourcePath = path;
 
-        log.info("Elseif :: {}", path);
-
-        if(!resourcePath.contains("/")) {
-            resourcePath= "/"+resourcePath;
+        if (!resourcePath.contains("/")) {
+            resourcePath = "/" + resourcePath;
         }
-            int indexName = resourcePath.lastIndexOf("/");
-            fileName = resourcePath.substring(indexName, resourcePath.length());
-        try {
-             file = new File(fileName);
+        int indexName = resourcePath.lastIndexOf("/");
+        fileName = resourcePath.substring(indexName, resourcePath.length());
+            file = new File(fileName);
 
             if (!file.exists()) {
                 file.createNewFile();
-                log.info("file created :: {}",file.getPath());
+                log.info("file created :: {}", file.getPath());
             }
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
+        try(FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                        BufferedWriter bw = new BufferedWriter(fw)) {
 
             // Write in file
             bw.write(String.valueOf(section));
 
-            // Close connection
-            bw.close();
-            log.info("file written :: {}", file);
-            if(fileType == RocheConstants.CSS || fileType == RocheConstants.JS)
-                s3BucketPushService.pushContentToS3(partnerName, fileName, "assets/"+fileType+fileName);
-            else if(fileType == RocheConstants.JSON)
-                s3BucketPushService.pushContentToS3(partnerName, fileName, path+"/data"+fileName);
+            log.debug("file written :: {}", file);
+            if (fileType.equalsIgnoreCase(RocheConstants.CSS) && fileType.equalsIgnoreCase(RocheConstants.JS))
+                s3BucketPushService.pushContentToS3(partnerName, fileName, "assets/" + fileType + fileName);
+            else if (fileType.equalsIgnoreCase(RocheConstants.JSON))
+                s3BucketPushService.pushContentToS3(partnerName, fileName, path + "/data" + fileName);
             else
-                s3BucketPushService.pushContentToS3(partnerName, fileName, path+"/view"+fileName);
+                s3BucketPushService.pushContentToS3(partnerName, fileName, path + "/view" + fileName);
             boolean fileDeleted = file.delete();
-            log.info("fileDeleted :: {}", fileDeleted);
+            log.debug("fileDeleted :: {}", fileDeleted);
 
         } catch (Exception e) {
-        log.error("Exception in updateFile method of DocumentParserServiceImpl :: " + e);
-    }
+            log.error("Exception in updateFile method of DocumentParserServiceImpl :: " + e);
+        }
     }
 
     private void getFiles(String src, List<String> tagNames) throws IOException {
@@ -193,70 +210,76 @@ public class DocumentParserServiceImpl implements DocumentParserService {
 
         //Open a URL Stream
         URL url = new URL(src);
-        InputStream in = url.openStream();
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(name));
+        try(InputStream in = url.openStream();
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(name))) {
 
-        for (int b; (b = in.read()) != -1;) {
-            out.write(b);
-        }
-        out.close();
-        in.close();
+            for (int b; (b = in.read()) != -1; ) {
+                out.write(b);
+            }
 
-        for (String partnerName : tagNames) {
-            s3BucketPushService.pushContentToS3(partnerName, name, "assets/images"+name);
+            for (String partnerName : tagNames) {
+                s3BucketPushService.pushContentToS3(partnerName, name, "assets/images" + name);
+            }
+        } catch (Exception e) {
+            log.error("Exception in getFiles method of DocumentParserServiceImpl :: " + e);
         }
 
     }
 
     private String sendRequest(ResourceResolver resourceResolver, String resource) {
-        String responseString= "";
+        String responseString = "";
 
-        try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                HttpServletRequest request = requestResponseFactory.createRequest("GET", resource);
-                request.setAttribute(WCMMode.REQUEST_ATTRIBUTE_NAME, WCMMode.DISABLED);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            HttpServletRequest request = requestResponseFactory.createRequest("GET", resource);
+            request.setAttribute(WCMMode.REQUEST_ATTRIBUTE_NAME, WCMMode.DISABLED);
 
-                HttpServletResponse response = requestResponseFactory.createResponse(out);
+            HttpServletResponse response = requestResponseFactory.createResponse(out);
 
-                requestProcessor.processRequest(request, response, resourceResolver);
+            requestProcessor.processRequest(request, response, resourceResolver);
             responseString = out.toString(response.getCharacterEncoding());
 
         } catch (IOException e) {
-            log.error("IOException in updateFile method of DocumentParserServiceImpl :: " + e);
+            log.error("IOException in sendRequest method of DocumentParserServiceImpl :: " + e);
         } catch (ServletException e) {
-            log.error("ServletException in updateFile method of DocumentParserServiceImpl :: " + e);
+            log.error("ServletException in sendRequest method of DocumentParserServiceImpl :: " + e);
         } catch (Exception e) {
-            log.error("Excepion in updateFile method of DocumentParserServiceImpl :: " + e);
+            log.error("Exception in sendRequest method of DocumentParserServiceImpl :: " + e);
         }
 
         return responseString;
     }
 
-    private String fetchJson(String resourcePath) throws IOException, ServletException, JSONException {
-
-        String uri= "http://15.207.109.174:4503"+resourcePath+".infinity.json";
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-
-        log.info("GET Response Status:: "
-                + httpResponse.getStatusLine().getStatusCode());
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                httpResponse.getEntity().getContent()));
-
-        String inputLine;
+    private String fetchJson(String resourcePath, String pageName) throws IOException {
+        String uri = "";
         StringBuffer response = new StringBuffer();
+        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            if (pageName == RocheConstants.Navigation)
+                uri = publishHost + resourcePath + "/jcr:content/root/container/container/list.model.json";
+            else
+                uri = publishHost + resourcePath + ".infinity.json";
 
-        while ((inputLine = reader.readLine()) != null) {
-            response.append(inputLine);
+            HttpGet httpGet = new HttpGet(uri);
+            CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+            log.info("GET Response Status:: "
+                    + httpResponse.getStatusLine().getStatusCode());
+
+             BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    httpResponse.getEntity().getContent()));
+
+            String inputLine;
+
+            while ((inputLine = reader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            log.debug("response :: {}", response.toString());
+            reader.close();
+        } catch (IOException e) {
+            log.error("IOException in sendRequest method of DocumentParserServiceImpl :: " + e);
+        } catch (Exception e) {
+            log.error("Exception in sendRequest method of DocumentParserServiceImpl :: " + e);
         }
-        reader.close();
 
-        // print result
-        log.info("response :: {}",response.toString());
-        httpClient.close();
-
-        return  response.toString();
+        return response.toString();
     }
 }

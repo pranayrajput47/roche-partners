@@ -1,0 +1,72 @@
+/* Section Secondary Footer CSS Start*/
+section.section-sec-footer  {
+    width: 80%;
+    margin: 10px auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+section.section-sec-footer a {
+    color: #5D5DFF;
+    text-decoration: none;
+}
+.section-sec-footer p {
+    color: #333;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section-sec-footer .anchor__blue{
+    color: #5D5DFF;
+    text-decoration: none;
+    width: fit-content;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section-sec-footer .footer--box__blue {
+    display: flex;
+    align-items: center;
+    padding: 18px 40px 14px;
+    border-radius: 5px;
+    border: none;
+    background: #e8e8e8;
+    margin: 35px 0 40px;
+}
+.section-sec-footer .nurse-img {
+    width: 34px;
+    max-width: 50%;
+    margin-right: 20px;
+}
+@media screen and (max-width: 767px) {
+    section.section-sec-footer  {
+        width: 90%;
+    }
+    .section-sec-footer p {
+        line-height: 22px;
+    }
+    .section-sec-footer li {
+        padding-left: 20px;
+    }
+    .section-sec-footer ul li::before {
+        left: -15px;
+        top: 10px;
+        width: 7px;
+        height: 7px;
+    }
+    .section-sec-footer .footer--box__blue {
+        padding: 15px 20px 14px;
+    }
+    .section-sec-footer .nurse-img {
+        width: 44px;
+        margin-right: 18px;
+    }
+}
+@media screen and (min-width: 1800px) {
+    .section-sec-footer p,
+    .section-sec-footer .anchor__blue,
+    .section-sec-footer li {
+        font-size: calc(14px + 0.5vw);
+        line-height: 1.6;
+    }
+}
+/* Section Secondary Footer CSS End*/

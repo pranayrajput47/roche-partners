@@ -1,0 +1,134 @@
+/* Section Pathways CSS Start*/
+.section-pathways {
+    width: 80%;
+    margin: 10px auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+section.section-pathways a {
+    color: #5D5DFF;
+    text-decoration: none;
+}
+.section-pathways p {
+    color: #333;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section-pathways .heading__blue {
+    color: #5D5DFF;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 24px;
+
+}
+.section-pathways .anchor__blue{
+    color: #5D5DFF;
+    text-decoration: none;
+    width: fit-content;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section-pathways ul {
+    list-style: none;
+}
+.section-pathways li {
+    font-size: 16px;
+    line-height: 24px;
+    padding-left: 45px;
+    margin: 5px 0;
+    position: relative;
+}
+.section-pathways ul li::before {
+    content: "";
+    background: #333;
+    font-weight: bold;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 20px;
+    position: absolute;
+    left: 0px;
+    top: 8px;
+}
+.section-pathways .pathway--box {
+    padding: 20px;
+    background: rgba(216,216,216,0.20);
+    margin: 5px 0;
+    border-radius: 10px;
+    color: #333;
+}
+.section-pathways .heading__black {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+.section-pathways .pathway--box li p {
+    margin-bottom: 25px;
+}
+.section-pathways .pathway--box p .anchor--box {
+    display: block;
+}
+.section-pathways .pathway--box p {
+    margin-top: 20px;
+}
+.section-pathways .pathway--box  p:first-of-type {
+    margin-top: 0;
+}
+.section-pathways .heading--two {
+    color: #333;
+    font-size: 24px;
+    line-height: 28px;
+    margin: 32px 0 25px;
+}
+@media screen and (max-width: 767px) {
+    section.section-pathways {
+        width: 90%;
+    }
+    .section-pathways p {
+        line-height: 22px;
+    }
+    .section-pathways li {
+        padding-left: 20px;
+    }
+    .section-pathways ul li::before {
+        left: -15px;
+        top: 10px;
+        width: 7px;
+        height: 7px;
+    }
+}
+@media screen and (min-width: 1800px) {
+    .section-pathways p,
+    .section-pathways .anchor__blue,
+    .section-pathways li {
+        font-size: calc(14px + 0.5vw);
+        line-height: 1.6;
+    }
+    .section-pathways .heading--intro {
+        font-size: calc(12px + 1.5vw);
+        line-height: 1.5;
+    }
+    .section-pathways .heading__blue {
+        font-size: calc(14px + 0.5vw);
+        line-height: 1.4;
+        margin-top: 25px;
+    }
+    .section-pathways .heading__black {
+        font-size: calc(16px + 0.5vw);
+        line-height: 1.5;
+    }
+    .section-pathways .heading--two {
+        font-size: calc(16px + 1vw);
+        line-height: 1.4;
+    }
+    .section-pathways ul li::before {
+        width: 10px;
+        height: 10px;
+        top: 13px;
+    }
+}
+/* Section Pathway CSS End*/

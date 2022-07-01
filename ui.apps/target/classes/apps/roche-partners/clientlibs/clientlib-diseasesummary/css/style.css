@@ -1,0 +1,121 @@
+/* Section Intro CSS Start*/
+section.section--intro  {
+    width: 80%;
+    margin: 10px auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+section.section--intro a {
+    color: #5D5DFF;
+    text-decoration: none;
+}
+
+.section--intro .heading--intro {
+    font-size: 36px;
+    line-height: 40px;
+    margin: 40px 0 30px;
+    color: #333;
+    text-align: center;
+}
+.section--intro  p {
+    color: #333;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section--intro .heading__blue {
+    color: #5D5DFF;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 24px;
+
+}
+.section--intro .anchor__blue{
+    color: #5D5DFF;
+    text-decoration: none;
+    width: fit-content;
+    font-size: 16px;
+    line-height: 24px;
+}
+.section--intro ul {
+    list-style: none;
+}
+.section--intro li {
+    font-size: 16px;
+    line-height: 24px;
+    padding-left: 45px;
+    margin: 5px 0;
+    position: relative;
+}
+.section--intro ul li::before {
+    content: "";
+    background: #333;
+    font-weight: bold;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 20px;
+    position: absolute;
+    left: 0px;
+    top: 8px;
+}
+.section--intro .types-box {
+    margin: 25px 0;
+}
+@media screen and (max-width: 767px) {
+    section.section--intro {
+        width: 90%;
+    }
+    .section--intro p {
+        line-height: 22px;
+    }
+    .section--intro li {
+        padding-left: 20px;
+    }
+    .section--intro ul li::before {
+        left: -15px;
+        top: 10px;
+        width: 7px;
+        height: 7px;
+    }
+	.section--intro .heading--intro {
+        font-size: 28px;
+        line-height: 32px;
+        margin: 30px 0 20px
+	}
+}
+@media screen and (min-width: 1800px) {
+    .section--intro p,
+    .section--intro .anchor__blue,
+    .section--intro li {
+        font-size: calc(14px + 0.5vw);
+        line-height: 1.6;
+    }
+    .section--intro .heading--intro {
+        font-size: calc(12px + 1.5vw);
+        line-height: 1.5;
+    }
+    .section--intro .heading__blue {
+        font-size: calc(14px + 0.5vw);
+        line-height: 1.4;
+        margin-top: 25px;
+    }
+    .section--intro .heading__black {
+        font-size: calc(16px + 0.5vw);
+        line-height: 1.5;
+    }
+    .section--intro .heading--two {
+        font-size: calc(16px + 1vw);
+        line-height: 1.4;
+    }
+    .section--intro ul li::before {
+        width: 10px;
+        height: 10px;
+        top: 13px;
+    }
+}
+/* Section Intro CSS End*/

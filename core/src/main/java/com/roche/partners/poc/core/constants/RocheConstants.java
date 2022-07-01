@@ -12,4 +12,5 @@ public class RocheConstants {
     public static final String JS = "js";
     public static final String SLASH = "/";
     public static final String HREF = "href";
+    public static final String Navigation = "navigation";
 }

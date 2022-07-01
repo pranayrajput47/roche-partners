@@ -1,0 +1,12 @@
+<p data-sly-test.edit="${wcmmode.edit}" data-emptytext="Configure Fluid Card Component here" class="cq-placeholder"></p>
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html">
+    <sly data-sly-call="${clientlib.css @ categories='roche-partners.fluid'}"/>
+</sly>
+    <section class="section--listing">
+            <img src="${properties.image}" alt="${properties.imageAltText}">
+            <h2 data-sly-element="${properties.headingSize || 'h2'}" class="heading__black">
+               ${properties.heading}
+            </h2>
+            ${properties.description @ context= 'html'}
+            <a href="${properties.ctaUrl}" class="anchor__blue">${properties.ctaText}</a>
+        </section>

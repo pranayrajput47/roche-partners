@@ -1,0 +1,68 @@
+.list section {
+    width: 80%;
+    margin: 10px auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+.list section a {
+    color: #5D5DFF;
+    text-decoration: none;
+}
+.list--top--heading {
+      font-size: 20px;
+      line-height: 24px;
+      color: #333;
+      margin: 40px 0 40px;
+}
+    .heading2 {
+      font-size: 20px;
+      color: #000000;
+      line-height: 1.5;
+      margin: 0 0 30px;
+      text-transform: uppercase;
+    }
+    .heading3 {
+      font-size: 18px;
+      color: #333;
+      line-height: 1.5;
+      margin: 0 0 5px;
+    }
+    .box-row {
+      display: flex;
+      margin: 0 -15px;
+      box-sizing: border-box;
+    }
+    .box-card {
+      flex: 50%;
+      padding: 25px;
+      margin: 0 15px;
+      background: rgba(216,216,216,0.20);
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-sizing: border-box;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .box-card .card-heading {
+      font-size: 18px;
+      color: #333;
+      line-height: 1.5;
+      margin: 0 0 15px;
+    }
+    .box-card .card-text {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.4;
+    }
+@media screen and (max-width: 767px) {
+    .list section {
+        width: 90%;
+    }
+    .list p {
+        line-height: 22px;
+    }
+    .list--top--heading {
+      margin: 20px 0;
+}
+}

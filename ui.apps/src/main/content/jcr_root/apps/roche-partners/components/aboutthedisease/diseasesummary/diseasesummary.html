@@ -1,0 +1,20 @@
+<p data-sly-test.edit="${wcmmode.edit}" data-emptytext="Configure Disease Summary Component here" class="cq-placeholder"></p>
+
+<section class="section--intro">
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html">
+    <sly data-sly-call="${clientlib.css @ categories='roche-partners.diseaseSummary'}"/>
+</sly>
+        <h1 class="heading--intro">${properties.heading}</h1>
+        <p class="width__70"> ${properties.description @context='html'}</p>
+        <div class="types-box">
+            <h4 class="heading__blue">${properties.subheadingone}</h4>
+            <p> ${properties.descriptiontwo @context='html'} </p>
+            </div>
+
+        <p>${properties.descriptionthree @context='html'}</p>
+
+        <h4 class="heading__blue">${properties.subheadingthree}</h4>
+
+        <p>${properties.descriptionfour @context='html'}</p>
+
+    </section>

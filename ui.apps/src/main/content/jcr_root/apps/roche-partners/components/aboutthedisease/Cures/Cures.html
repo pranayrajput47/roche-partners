@@ -1,0 +1,16 @@
+<p data-sly-test.edit="${wcmmode.edit}" data-emptytext="Configure Cures Component here" class="cq-placeholder"></p>
+
+<sly data-sly-use.model="com.roche.partners.poc.core.models.CruesModel">
+<section class="section-pathways">
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html">
+    <sly data-sly-call="${clientlib.css @ categories='roche-partners.cures'}"/>
+</sly>
+   <sly data-sly-list.item="${model.curesList}">
+    <div class="pathway--box">
+            <h4 class="heading__black">  ${item.heading}</h4>
+            <p>${item.description @context='html'}</p>
+
+    </div>
+    </sly>
+   </section> 
+</sly>
